@@ -13,7 +13,7 @@ class GQueryEngine:
         self.__worldcity_df.drop(
             columns=["iso2", "iso3", "capital", "id"], inplace=True
         )
-        self.__worldcity_df["city_ascii"] = self.__worldcity_df[
+        self.__worldcity_df["city_normalized"] = self.__worldcity_df[
             "city_ascii"
         ].str.lower()
         print("GQueryEngine has been initalized.")
@@ -21,12 +21,16 @@ class GQueryEngine:
     def retrieve(self, city_name):
         df = self.__worldcity_df
 
-        matched_rows = df[df["city_ascii"] == city_name.lower()]
+        matched_rows = df[df["city_normalized"] == city_name.lower()]
         if matched_rows.empty:
             print(f"{city_name} is not found")
             return None
+        
+        city_data = matched_rows.iloc[0].to_dict()
+        del city_data['city_ascii']
+        del city_data['city_normalized']
 
-        return matched_rows.iloc[0].to_dict()
+        return city_data
 
     def print(self, city_name):     
         city_data = self.retrieve(city_name)
