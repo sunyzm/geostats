@@ -16,7 +16,9 @@ def main(argv):
 
 
     query_engine = GQueryEngine(file_path)
-    query_engine.print("new york")
+    query_engine.print("New York")
+    query_engine.print("san francisco")
+    query_engine.print("Utopia City")
 
 
 if __name__ == "__main__":
