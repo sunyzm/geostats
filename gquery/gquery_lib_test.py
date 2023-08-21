@@ -10,6 +10,9 @@ flags.DEFINE_string("data_path", None, "Path to data files.")
 def main(argv):
     del argv  # Unused.
 
+    if FLAGS.data_path[::-1] != "/":
+        FLAGS.data_path += "/"
+
     file_path = FLAGS.data_path + "worldcities.csv"
     if not os.path.exists(file_path):
         raise FileExistsError(f"File '{file_path}' does not exists")
