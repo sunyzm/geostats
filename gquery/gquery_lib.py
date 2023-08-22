@@ -34,5 +34,5 @@ class GQueryEngine:
 
     def print(self, city_name):     
         city_data = self.retrieve(city_name)
-        if city_data != None:   
+        if city_data is not None:   
             print(city_data)
