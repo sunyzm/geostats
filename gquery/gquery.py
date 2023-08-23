@@ -7,13 +7,14 @@ import os
 FLAGS = flags.FLAGS
 flags.DEFINE_string("data_path", None, "Path to data files.")
 flags.DEFINE_string("distance", None, "Compute the distance between two cities.")
+flags.DEFINE_string("unit", "km", "Distance unit (km or mi)")
 flags.DEFINE_string("info", None, "Show info of a given city.")
 flags.DEFINE_string(
     "compare", None, "Show info of a list of cities, separate by comma."
 )
 
 
-def coord_distance(lat1, lat2, lon1, lon2):
+def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
     # Convert from degrees to radians.
     lon1 = radians(lon1)
     lon2 = radians(lon2)
@@ -27,8 +28,8 @@ def coord_distance(lat1, lat2, lon1, lon2):
 
     c = 2 * asin(sqrt(a))
 
-    # Radius of earth in kilometers. Use 3956 for miles.
-    r = 6371
+    # Radius of earth.
+    r = 3958.8 if use_mile else 6371
 
     return c * r
 
@@ -68,11 +69,18 @@ def main(argv):
         if (city1_data is None) or (city2_data is None):
             return
 
+        use_mile = FLAGS.unit in ("mi", "mile")
+
         distance = coord_distance(
-            city1_data["lat"], city2_data["lat"], city1_data["lng"], city2_data["lng"]
+            city1_data["lat"],
+            city2_data["lat"],
+            city1_data["lng"],
+            city2_data["lng"],
+            use_mile,
         )
         print(
-            f"Distance between {city1_data['city']} and {city2_data['city']}: {distance:.1f}km"
+            f"Distance between {city1_data['city']} and {city2_data['city']}: {distance:.1f} "
+            + ("mi" if use_mile else "km")
         )
 
 
