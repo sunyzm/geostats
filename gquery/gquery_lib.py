@@ -5,7 +5,7 @@ import os
 class GQueryEngine:
     __worldcity_df = None
 
-    def __init__(self, datafile_path):
+    def __init__(self, datafile_path, debug_enabled = False):
         if not os.path.exists(datafile_path):
             raise FileExistsError(f"File '{datafile_path}' does not exists")
 
@@ -16,7 +16,8 @@ class GQueryEngine:
         self.__worldcity_df["city_normalized"] = self.__worldcity_df[
             "city_ascii"
         ].str.lower()
-        print("GQueryEngine has been initalized.")
+        if debug_enabled:
+            print("GQueryEngine has been initalized.")
 
     def retrieve(self, city_name):
         df = self.__worldcity_df

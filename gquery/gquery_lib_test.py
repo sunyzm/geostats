@@ -18,7 +18,7 @@ def main(argv):
     if not os.path.exists(file_path):
         raise FileExistsError(f"File '{file_path}' does not exists")
 
-    query_engine = GQueryEngine(file_path)
+    query_engine = GQueryEngine(file_path, True)
     query_engine.print("New York")
     query_engine.print("san francisco")
     query_engine.print("Utopia City")
