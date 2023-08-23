@@ -1,7 +1,6 @@
 from absl import app
 from absl import flags
-from gquery_lib import GQueryEngine
-from math import radians, cos, sin, asin, sqrt
+from gquery_lib import GQueryEngine, coord_distance, print_city
 import os
 
 FLAGS = flags.FLAGS
@@ -12,26 +11,6 @@ flags.DEFINE_string("info", None, "Show info of a given city.")
 flags.DEFINE_string(
     "compare", None, "Show info of a list of cities, separate by comma."
 )
-
-
-def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
-    # Convert from degrees to radians.
-    lon1 = radians(lon1)
-    lon2 = radians(lon2)
-    lat1 = radians(lat1)
-    lat2 = radians(lat2)
-
-    # Haversine formula
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-
-    c = 2 * asin(sqrt(a))
-
-    # Radius of earth.
-    r = 3958.8 if use_mile else 6371
-
-    return c * r
 
 
 def main(argv):
@@ -50,13 +29,13 @@ def main(argv):
     if FLAGS.info is not None:
         city_data = query_engine.retrieve(FLAGS.info)
         if city_data is not None:
-            print(city_data)
+            print_city(city_data)
     elif FLAGS.compare is not None:
         city_names = [s.strip() for s in str(FLAGS.compare).split(",")]
         for city in city_names:
             city_data = query_engine.retrieve(city)
             if city_data is not None:
-                print(city_data)
+                print_city(city_data)
     elif FLAGS.distance is not None:
         city_names = [s.strip() for s in str(FLAGS.distance).split(",")]
         if len(city_names) != 2:
