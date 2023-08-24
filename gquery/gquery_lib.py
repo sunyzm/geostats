@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from math import radians, cos, sin, asin, sqrt
+from math import radians, cos, sin, asin, sqrt, floor
 
 
 def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
@@ -23,10 +23,21 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
     return c * r
 
 
+def decimal_to_degree(val, is_lat):
+    abs_val =  abs(val)
+    degree = floor(abs_val)
+    minute = abs_val - degree
+    direction = ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
+    return f"{degree}{chr(176)} {round(minute*60.0)}\' {direction}"
+
+
 def print_city(city_data):
     print(f"[{city_data['city']}]")
-    print(f"- Latitude: {city_data['lat']:.2f}")
-    print(f"- Longtitude: {city_data['lng']:.2f}")
+    # print(f"- Latitude: {city_data['lat']:.2f}")
+    # print(f"- Longtitude: {city_data['lng']:.2f}")
+    lat = city_data['lat']
+    lng = city_data['lng']
+    print(f"- Coordinates: {decimal_to_degree(lat, is_lat=True)}, {decimal_to_degree(lng, is_lat=False)}")
     print(f"- Country: {city_data['country']}")
     print(f"- Administration: {city_data['admin_name']}")
     print(f"- Population: {int(city_data['population']):,}")
