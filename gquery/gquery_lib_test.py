@@ -4,21 +4,22 @@ from gquery_lib import GQueryEngine
 import os
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("data_path", None, "Path to data files.")
+flags.DEFINE_string(
+    "data_path",
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), os.pardir, "data/worldcities.csv"
+    ),
+    "Path to world city data file.",
+)
 
 
 def main(argv):
     del argv  # Unused.
 
-    # Check the data_path has a trailing backslash.
-    if FLAGS.data_path[::-1] != "/":
-        FLAGS.data_path += "/"
+    if not os.path.exists(FLAGS.data_path):
+        raise FileExistsError(f"File '{FLAGS.data_path}' does not exists")
 
-    file_path = FLAGS.data_path + "worldcities.csv"
-    if not os.path.exists(file_path):
-        raise FileExistsError(f"File '{file_path}' does not exists")
-
-    query_engine = GQueryEngine(file_path, True)
+    query_engine = GQueryEngine(FLAGS.data_path, True)
     query_engine.print("New York")
     query_engine.print("san francisco")
     query_engine.print("Utopia City")

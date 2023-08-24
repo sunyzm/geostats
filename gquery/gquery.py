@@ -4,7 +4,13 @@ from gquery_lib import GQueryEngine, coord_distance, print_city
 import os
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("data_path", None, "Path to data files.")
+flags.DEFINE_string(
+    "data_path",
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), os.pardir, "data/worldcities.csv"
+    ),
+    "Path to world city data file.",
+)
 flags.DEFINE_string("distance", None, "Compute the distance between two cities.")
 flags.DEFINE_string("unit", "km", "Distance unit (km or mi)")
 flags.DEFINE_string("info", None, "Show info of a given city.")
@@ -16,15 +22,10 @@ flags.DEFINE_string(
 def main(argv):
     del argv  # Unused.
 
-    # Check the data_path has a trailing backslash.
-    if FLAGS.data_path[::-1] != "/":
-        FLAGS.data_path += "/"
+    if not os.path.exists(FLAGS.data_path):
+        raise FileExistsError(f"File '{FLAGS.data_path}' does not exists")
 
-    file_path = FLAGS.data_path + "worldcities.csv"
-    if not os.path.exists(file_path):
-        raise FileExistsError(f"File '{file_path}' does not exists")
-
-    query_engine = GQueryEngine(file_path)
+    query_engine = GQueryEngine(FLAGS.data_path)
 
     if FLAGS.info is not None:
         city_data = query_engine.retrieve(FLAGS.info)
