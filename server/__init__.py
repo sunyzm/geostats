@@ -1,6 +1,19 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, g
+from gquery_lib import GQueryEngine
 import os
 import sys
+
+
+def get_query_engine():
+    if "query_engine" not in g:
+        datafile = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            os.pardir,
+            "data/worldcities.csv",
+        )
+        g.query_engine = GQueryEngine(datafile)
+
+    return g.query_engine
 
 
 def create_app(test_config=None):
@@ -13,16 +26,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    sys.path.append(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, "gquery")
-    )
-    from gquery_lib import GQueryEngine
-
-    datafile = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), os.pardir, "data/worldcities.csv"
-    )
-    query_engine = GQueryEngine(datafile)
-
     @app.route("/")
     @app.route("/index.html")
     def index():
@@ -30,7 +33,15 @@ def create_app(test_config=None):
 
     @app.route("/id/<int:city_id>")
     def show_city_info(city_id):
-        city_info = {"name": "San Francisco", "population": 900000, "country": "USA"}
+        city_info = {"name": "Not Found", "population": "NA", "country": "NA"}
+
+        query_engine = get_query_engine()
+        city_data = query_engine.get(id=city_id)
+        if city_data is not None:
+            city_info["name"] = city_data["city"]
+            city_info["population"] = city_data["population"]
+            city_info["country"] = city_data["country"]
+
         return render_template("city.html", city_info=city_info)
 
     return app
