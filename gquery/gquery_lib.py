@@ -52,8 +52,7 @@ class GQueryEngine:
         if not os.path.exists(datafile_path):
             raise FileExistsError(f"File '{datafile_path}' does not exists")
 
-        self.__worldcity_df = pd.read_csv(datafile_path, engine="c")
-        self.__worldcity_df = self.__worldcity_df.reset_index()
+        self.__worldcity_df = pd.read_csv(datafile_path, header=0, engine="c")
 
         self.__worldcity_df.drop(
             columns=["iso2", "iso3", "capital", "id"], inplace=True
@@ -66,7 +65,13 @@ class GQueryEngine:
             print("GQueryEngine has been initalized.")
 
     def get(self, id):
-        city_data = self.__worldcity_df.iloc[[id]].to_dict()
+        df = self.__worldcity_df
+        matched_rows = df[df.index == id]
+        if matched_rows.empty:
+            print(f"Error: City ID {id} is not valid")
+            return None
+
+        city_data = matched_rows.iloc[0].to_dict()
         del city_data["city_ascii"]
         del city_data["city_normalized"]
 
@@ -74,7 +79,6 @@ class GQueryEngine:
 
     def retrieve(self, city_name):
         df = self.__worldcity_df
-
         matched_rows = df[df["city_normalized"] == city_name.lower()]
         if matched_rows.empty:
             print(f"ERROR: {city_name} is not found")
