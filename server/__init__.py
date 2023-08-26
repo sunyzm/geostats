@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, url_for, redirect, request, abort
 from gquery_lib import GQueryEngine
 import os
 import sys
@@ -26,9 +26,21 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/")
-    @app.route("/index.html")
+    @app.route("/", methods=["GET", "POST"])
+    @app.route("/index.html", methods=["GET", "POST"])
     def index():
+        if request.method == "POST":
+            query_engine = get_query_engine()
+            city_name = request.form["city1"]
+            if not city_name:
+                abort(404)
+
+            city_data = query_engine.retrieve(city_name)
+            if not city_data:
+                abort(404)
+            else:
+                return redirect(url_for("show_city_info", city_id=city_data['index']))
+
         return render_template("index.html")
 
     @app.route("/id/<int:city_id>")

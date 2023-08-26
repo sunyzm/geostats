@@ -43,6 +43,7 @@ def print_city(city_data):
     print(f"- Country: {city_data['country']}")
     print(f"- Administration: {city_data['admin_name']}")
     print(f"- Population: {int(city_data['population']):,}")
+    print(f"- Index: {city_data['index']}")
 
 
 class GQueryEngine:
@@ -52,14 +53,12 @@ class GQueryEngine:
         if not os.path.exists(datafile_path):
             raise FileExistsError(f"File '{datafile_path}' does not exists")
 
-        self.__worldcity_df = pd.read_csv(datafile_path, header=0, engine="c")
+        df = pd.read_csv(datafile_path, header=0, engine="c")
+        df = df.assign(index=df.index)
+        df.drop(columns=["iso2", "iso3", "capital", "id"], inplace=True)
+        df["city_normalized"] = df["city_ascii"].str.lower()
 
-        self.__worldcity_df.drop(
-            columns=["iso2", "iso3", "capital", "id"], inplace=True
-        )
-        self.__worldcity_df["city_normalized"] = self.__worldcity_df[
-            "city_ascii"
-        ].str.lower()
+        self.__worldcity_df = df
 
         if debug_enabled:
             print("GQueryEngine has been initalized.")
