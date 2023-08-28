@@ -97,7 +97,7 @@ class GQueryEngine:
         df = self.__worldcity_df
         matched_rows = df[df.index == id]
         if matched_rows.empty:
-            print(f"Error: City ID {id} is not valid")
+            print(f"ERROR: City ID {id} is not valid")
             return None
 
         city_data = matched_rows.iloc[0].to_dict()

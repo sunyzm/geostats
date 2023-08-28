@@ -1,17 +1,20 @@
-from flask import Flask, render_template, g, url_for, redirect, request, abort
+from flask import (
+    Flask,
+    current_app,
+    render_template,
+    g,
+    url_for,
+    redirect,
+    request,
+    abort,
+)
 from gquery_lib import GQueryEngine, CityInfo
 import os
-import sys
 
 
 def get_query_engine():
     if "query_engine" not in g:
-        datafile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            os.pardir,
-            "data/worldcities.csv",
-        )
-        g.query_engine = GQueryEngine(datafile)
+        g.query_engine = GQueryEngine(current_app.config["DATAFILE"])
 
     return g.query_engine
 
@@ -19,6 +22,20 @@ def get_query_engine():
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    app.config.from_mapping(
+        SECRET_KEY="dev",
+        DATAFILE=os.path.join(app.instance_path, "data/worldcities.csv"),
+    )
+
+    print("Datafile:", app.config["DATAFILE"])
+
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile("config.py", silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
     try:
@@ -40,7 +57,7 @@ def create_app(test_config=None):
                 abort(404)
             else:
                 return redirect(
-                    url_for("show_city_info", city_id=city_data["index"])
+                    url_for("show_city_info", city_id=city_data.index)
                 )
 
         return render_template("index.html")
@@ -48,11 +65,10 @@ def create_app(test_config=None):
     @app.route("/id/<int:city_id>")
     def show_city_info(city_id):
         query_engine = get_query_engine()
-        city_data = query_engine.get(id=city_id)
-        if city_data is None:
+        city_info = query_engine.get(id=city_id)
+        if city_info is None:
             abort(404)
 
-        city_info = CityInfo(city_data)
         return render_template("city.html", city_info=city_info)
 
     return app
