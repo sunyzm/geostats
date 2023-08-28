@@ -1,17 +1,21 @@
 from absl import app
 from absl import flags
-from gquery_lib import GQueryEngine, coord_distance, print_city
+from gquery_lib import GQueryEngine, coord_distance
 import os
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string(
     "data_path",
     os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), os.pardir, "data/worldcities.csv"
+        os.path.dirname(os.path.abspath(__file__)),
+        os.pardir,
+        "data/worldcities.csv",
     ),
     "Path to world city data file.",
 )
-flags.DEFINE_string("distance", None, "Compute the distance between two cities.")
+flags.DEFINE_string(
+    "distance", None, "Compute the distance between two cities."
+)
 flags.DEFINE_string("unit", "km", "Distance unit (km or mi)")
 flags.DEFINE_string("info", None, "Show info of a given city.")
 flags.DEFINE_string(

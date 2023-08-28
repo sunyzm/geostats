@@ -9,14 +9,8 @@ from flask import (
     abort,
 )
 from gquery_lib import GQueryEngine, CityInfo
+from . import db
 import os
-
-
-def get_query_engine():
-    if "query_engine" not in g:
-        g.query_engine = GQueryEngine(current_app.config["DATAFILE"])
-
-    return g.query_engine
 
 
 def create_app(test_config=None):
@@ -47,7 +41,8 @@ def create_app(test_config=None):
     @app.route("/index.html", methods=["GET", "POST"])
     def index():
         if request.method == "POST":
-            query_engine = get_query_engine()
+            query_engine = db.get_query_engine()
+
             city_name = request.form["city1"]
             if not city_name:
                 abort(404)
@@ -64,7 +59,7 @@ def create_app(test_config=None):
 
     @app.route("/id/<int:city_id>")
     def show_city_info(city_id):
-        query_engine = get_query_engine()
+        query_engine = db.get_query_engine()
         city_info = query_engine.get(id=city_id)
         if city_info is None:
             abort(404)
