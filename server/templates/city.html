@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>{{ city_info.name }}</title>
-  </head>
-  <body>
-    <h1>{{ city_info.name }}</h1>
-    <ul>
-        <li>Coordinates: {{ city_info.coord }}</li>
-        <li>Population: {{ city_info.population }}</li>
-        <li>Country: {{ city_info.country }}</li>
-        <li>Administration: {{ city_info.admin }}</li>
-    </ul>
-  </body>
-</html>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %} {{ city_info.name }}{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<li>Coordinates: {{ city_info.coord }}</li>
+<li>Population: {{ city_info.population }}</li>
+<li>Country: {{ city_info.country }}</li>
+<li>Administration: {{ city_info.admin }}</li>
+{% endblock %}

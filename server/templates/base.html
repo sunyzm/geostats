@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<title>{% block title %}{% endblock %} - Geostats</title>
+<nav>
+  <h1>Geostats</h1>
+  <ul>
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+    <li>Distance</li>
+  </ul>
+</nav>
+<section class="content">
+  <header>{% block header %}{% endblock %}</header>
+  {% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %} {% block content %}{% endblock %}
+</section>

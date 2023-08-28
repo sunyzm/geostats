@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Welcome to Geostats</title>
-  </head>
-  <body>
-    <h1>Welcome to Geostats</h1>
-    <form method="post">
-      <input type="text" name="city1" placeholder="City name"
-             value="{{ request.form['city1'] }}"></input>
-      <button type="submit">Search</button>      
-    </form>
-  </body>
-</html>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Welcome{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  <input type="text" name="city1" placeholder="City name"
+         value="{{ request.form['city1'] }}"></input>
+  <button type="submit">Search</button>      
+</form>
+{% endblock %}
