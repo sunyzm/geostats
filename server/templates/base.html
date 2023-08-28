@@ -1,15 +1,26 @@
 <!DOCTYPE html>
-<title>{% block title %}{% endblock %} - Geostats</title>
-<nav>
-  <h1>Geostats</h1>
-  <ul>
-    <li><a href="{{ url_for('index') }}">Home</a></li>
-    <li>Distance</li>
-  </ul>
-</nav>
-<section class="content">
-  <header>{% block header %}{% endblock %}</header>
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %} {% block content %}{% endblock %}
-</section>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block title %}{% endblock %} - Geostats</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <nav>
+      <h1><a href="{{ url_for('index') }}">Geostats</a></h1>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li>Distance</li>
+      </ul>
+    </nav>
+    <section class="content">
+      <header>{% block header %}{% endblock %}</header>
+      {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+      {% endfor %} {% block content %}{% endblock %}
+    </section>
+  </body>
+</html>
