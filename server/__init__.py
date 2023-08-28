@@ -1,5 +1,5 @@
 from flask import Flask, render_template, g, url_for, redirect, request, abort
-from gquery_lib import GQueryEngine
+from gquery_lib import GQueryEngine, CityInfo
 import os
 import sys
 
@@ -39,21 +39,20 @@ def create_app(test_config=None):
             if not city_data:
                 abort(404)
             else:
-                return redirect(url_for("show_city_info", city_id=city_data['index']))
+                return redirect(
+                    url_for("show_city_info", city_id=city_data["index"])
+                )
 
         return render_template("index.html")
 
     @app.route("/id/<int:city_id>")
     def show_city_info(city_id):
-        city_info = {"name": "Not Found", "population": "NA", "country": "NA"}
-
         query_engine = get_query_engine()
         city_data = query_engine.get(id=city_id)
-        if city_data is not None:
-            city_info["name"] = city_data["city"]
-            city_info["population"] = city_data["population"]
-            city_info["country"] = city_data["country"]
+        if city_data is None:
+            abort(404)
 
+        city_info = CityInfo(city_data)
         return render_template("city.html", city_info=city_info)
 
     return app

@@ -27,7 +27,9 @@ def decimal_to_degree(val, is_lat):
     abs_val = abs(val)
     degree = floor(abs_val)
     minute = abs_val - degree
-    direction = ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
+    direction = (
+        ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
+    )
     return f"{degree}{chr(176)} {round(minute*60.0)}' {direction}"
 
 
@@ -44,6 +46,18 @@ def print_city(city_data):
     print(f"- Administration: {city_data['admin_name']}")
     print(f"- Population: {int(city_data['population']):,}")
     print(f"- Index: {city_data['index']}")
+
+
+class CityInfo:
+    def __init__(self, city_data):
+        self.index = city_data["index"]
+        self.name = city_data["city"]
+        self.population = int(city_data["population"])
+        self.country = city_data["country"]
+        self.admin = city_data["admin_name"]
+        self.lat = city_data["lat"]
+        self.lng = city_data["lng"]
+        self.coord = f"{decimal_to_degree(self.lat, is_lat=True)}, {decimal_to_degree(self.lng, is_lat=False)}"
 
 
 class GQueryEngine:
