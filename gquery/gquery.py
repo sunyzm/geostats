@@ -28,15 +28,15 @@ def main(argv):
     query_engine = GQueryEngine(FLAGS.data_path)
 
     if FLAGS.info is not None:
-        city_data = query_engine.retrieve(FLAGS.info)
-        if city_data is not None:
-            print_city(city_data)
+        city_info = query_engine.retrieve(FLAGS.info)
+        if city_info is not None:
+            print(city_info)
     elif FLAGS.compare is not None:
         city_names = [s.strip() for s in str(FLAGS.compare).split(",")]
         for city in city_names:
-            city_data = query_engine.retrieve(city)
-            if city_data is not None:
-                print_city(city_data)
+            city_info = query_engine.retrieve(city)
+            if city_info is not None:
+                print(city_info)
     elif FLAGS.distance is not None:
         city_names = [s.strip() for s in str(FLAGS.distance).split(",")]
         if len(city_names) != 2:

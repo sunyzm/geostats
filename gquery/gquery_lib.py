@@ -40,7 +40,8 @@ def print_city(city_data):
     lat = city_data["lat"]
     lng = city_data["lng"]
     print(
-        f"- Coordinates: {decimal_to_degree(lat, is_lat=True)}, {decimal_to_degree(lng, is_lat=False)}"
+        f"- Coordinates: {decimal_to_degree(lat, is_lat=True)}, "
+        f"{decimal_to_degree(lng, is_lat=False)}"
     )
     print(f"- Country: {city_data['country']}")
     print(f"- Administration: {city_data['admin_name']}")
@@ -57,7 +58,22 @@ class CityInfo:
         self.admin = city_data["admin_name"]
         self.lat = city_data["lat"]
         self.lng = city_data["lng"]
-        self.coord = f"{decimal_to_degree(self.lat, is_lat=True)}, {decimal_to_degree(self.lng, is_lat=False)}"
+        self.coord = (
+            f"{decimal_to_degree(self.lat, is_lat=True)}, "
+            f"{decimal_to_degree(self.lng, is_lat=False)}"
+        )
+
+    def __str__(self):
+        lat = self.lat
+        lng = self.lng
+        return (
+            f"{self.name}\n"
+            f"- Coordinates: {self.coord}\n"
+            f"- Country: {self.country}\n"
+            f"- Administration: {self.admin}\n"
+            f"- Population: {self.population:,}"
+            # f"\n- Index: {self.index}"
+        )
 
 
 class GQueryEngine:
@@ -85,10 +101,7 @@ class GQueryEngine:
             return None
 
         city_data = matched_rows.iloc[0].to_dict()
-        del city_data["city_ascii"]
-        del city_data["city_normalized"]
-
-        return city_data
+        return CityInfo(city_data)
 
     def retrieve(self, city_name):
         df = self.__worldcity_df
@@ -98,12 +111,9 @@ class GQueryEngine:
             return None
 
         city_data = matched_rows.iloc[0].to_dict()
-        del city_data["city_ascii"]
-        del city_data["city_normalized"]
-
-        return city_data
+        return CityInfo(city_data)
 
     def print(self, city_name):
-        city_data = self.retrieve(city_name)
-        if city_data is not None:
-            print_city(city_data)
+        city_info = self.retrieve(city_name)
+        if city_info is not None:
+            print(city_info)
