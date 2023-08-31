@@ -1,12 +1,11 @@
 from flask import (
-    Flask,
-    current_app,
-    render_template,
-    g,
-    url_for,
-    redirect,
-    request,
     abort,
+    flash,
+    Flask,
+    redirect,
+    render_template,
+    request,
+    url_for,
 )
 from gquery_lib import GQueryEngine, CityInfo
 from . import db
@@ -22,7 +21,7 @@ def create_app(test_config=None):
         DATAFILE=os.path.join(app.instance_path, "data/worldcities.csv"),
     )
 
-    print("Datafile:", app.config["DATAFILE"])
+    app.logger.info("Datafile: %s", app.config["DATAFILE"])
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -45,11 +44,13 @@ def create_app(test_config=None):
 
             city_name = request.form["city1"]
             if not city_name:
-                abort(404)
+                flash("Input is empty.")
+                return redirect(url_for("index"))
 
             city_data = query_engine.retrieve(city_name)
             if not city_data:
-                abort(404)
+                flash(f"City \"{city_name}\" is not found.")
+                return redirect(url_for("index"))
             else:
                 return redirect(
                     url_for("show_city_info", city_id=city_data.index)
