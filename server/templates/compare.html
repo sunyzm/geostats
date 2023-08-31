@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Compare Cities{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <input type="text" name="city1" placeholder="City name"
+         value="{{ request.form['city1'] }}"></input>
+    <input type="text" name="city2" placeholder="City name"
+         value="{{ request.form['city2'] }}"></input>
+    <button type="submit">Compare</button>      
+</form>
+{% endblock %}

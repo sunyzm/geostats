@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h2>{% block title %} {{ city_info.name }}{% endblock %}</h2>
+  <h2>{% block title %} {{ cities_info[0].name }} vs {{ cities_info[1].name }} {% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
+{% for city_info in cities_info %}
+<h3> {{ city_info.name }} </h3>
 <ul>
 <li>Coordinates: {{ city_info.coord }}</li>
 <li>Population: {{ city_info.population }}</li>
 <li>Country: {{ city_info.country }}</li>
 <li>Administration: {{ city_info.admin }}</li>
 </ul>
+{% endfor %}
 {% endblock %}

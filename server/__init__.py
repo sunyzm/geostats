@@ -49,7 +49,7 @@ def create_app(test_config=None):
 
             city_data = query_engine.retrieve(city_name)
             if not city_data:
-                flash(f"City \"{city_name}\" is not found.")
+                flash(f'City "{city_name}" is not found.')
                 return redirect(url_for("index"))
             else:
                 return redirect(
@@ -57,6 +57,32 @@ def create_app(test_config=None):
                 )
 
         return render_template("index.html")
+
+    @app.route("/compare.html", methods=["GET", "POST"])
+    def compare():
+        if request.method == "POST":
+            query_engine = db.get_query_engine()
+
+            city1, city2 = request.form["city1"], request.form["city2"]
+            if (not city1) or (not city2):
+                flash("Input is empty.")
+                return redirect(url_for("compare"))
+
+            cities_and_info = [
+                (city1, query_engine.retrieve(city1)),
+                (city2, query_engine.retrieve(city2)),
+            ]
+            for city_name, info in cities_and_info:
+                if not info:
+                    flash(f'City "{city_name}" is not found.')
+                    return redirect(url_for("compare"))
+
+            return render_template(
+                "show_comparison.html",
+                cities_info=[item[1] for item in cities_and_info],
+            )
+
+        return render_template("compare.html")
 
     @app.route("/id/<int:city_id>")
     def show_city_info(city_id):
