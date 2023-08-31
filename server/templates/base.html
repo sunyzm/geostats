@@ -2,6 +2,7 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
     <title>{% block title %}{% endblock %} - Geostats</title>
     <link
       rel="stylesheet"
@@ -20,7 +21,7 @@
       <header>{% block header %}{% endblock %}</header>
       {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>
-      {% endfor %} {% block content %}{% endblock %}
+      <main>{% endfor %} {% block content %}{% endblock %}</main>
     </section>
   </body>
 </html>

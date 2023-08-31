@@ -5,13 +5,22 @@
 {% endblock %}
 
 {% block content %}
-{% for city_info in cities_info %}
-<h3> {{ city_info.name }} </h3>
-<ul>
-<li>Coordinates: {{ city_info.coord }}</li>
-<li>Population: {{ city_info.population }}</li>
-<li>Country: {{ city_info.country }}</li>
-<li>Administration: {{ city_info.admin }}</li>
-</ul>
-{% endfor %}
+<table>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Coordinates</th>
+        <th>Population</th>
+        <th>Country</th>
+        <th>Administration</th>
+    </tr>
+    {% for city_info in cities_info %}
+    <tr>
+        <td>{{ city_info.name }} </td>
+        <td>{{ city_info.coord }}</td>
+        <td>{{ city_info.population }}</td>
+        <td>{{ city_info.country }}</td>
+        <td>{{ city_info.admin }}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
