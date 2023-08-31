@@ -6,21 +6,25 @@
 
 {% block content %}
 <table>
-    <tr>
-        <th>&nbsp;</th>
-        <th>Coordinates</th>
-        <th>Population</th>
-        <th>Country</th>
-        <th>Administration</th>
-    </tr>
-    {% for city_info in cities_info %}
-    <tr>
-        <td>{{ city_info.name }} </td>
-        <td>{{ city_info.coord }}</td>
-        <td>{{ city_info.population }}</td>
-        <td>{{ city_info.country }}</td>
-        <td>{{ city_info.admin }}</td>
-    </tr>
-    {% endfor %}
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Coordinates</th>
+            <th>Population</th>
+            <th>Country</th>
+            <th>Administration</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for city_info in cities_info %}
+        <tr>
+            <th>{{ city_info.name }} </td>
+            <td>{{ city_info.coord }}</td>
+            <td>{{ city_info.population }}</td>
+            <td>{{ city_info.country }}</td>
+            <td>{{ city_info.admin }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
