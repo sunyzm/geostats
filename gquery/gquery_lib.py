@@ -23,7 +23,7 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
     return c * r
 
 
-def decimal_to_degree(val, is_lat):
+def decimal_to_degree(val: float, is_lat: bool):
     abs_val = abs(val)
     degree = floor(abs_val)
     minute = abs_val - degree
@@ -93,7 +93,7 @@ class GQueryEngine:
         if debug_enabled:
             print("GQueryEngine has been initalized.")
 
-    def get(self, id):
+    def get(self, id: int) -> CityInfo:
         df = self.__worldcity_df
         matched_rows = df[df.index == id]
         if matched_rows.empty:
@@ -103,7 +103,7 @@ class GQueryEngine:
         city_data = matched_rows.iloc[0].to_dict()
         return CityInfo(city_data)
 
-    def retrieve(self, city_name):
+    def retrieve(self, city_name: str) -> CityInfo:
         df = self.__worldcity_df
         matched_rows = df[df["city_normalized"] == city_name.lower()]
         if matched_rows.empty:
@@ -113,7 +113,7 @@ class GQueryEngine:
         city_data = matched_rows.iloc[0].to_dict()
         return CityInfo(city_data)
 
-    def print(self, city_name):
+    def print(self, city_name: str):
         city_info = self.retrieve(city_name)
         if city_info is not None:
             print(city_info)
