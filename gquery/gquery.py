@@ -1,72 +1,53 @@
-from absl import app
-from absl import flags
 from gquery_lib import GQueryEngine, coord_distance
 import os
-
-FLAGS = flags.FLAGS
-flags.DEFINE_string(
-    "data_path",
-    os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        os.pardir,
-        "data/worldcities.csv",
-    ),
-    "Path to world city data file.",
-)
-flags.DEFINE_string(
-    "distance", None, "Compute the distance between two cities."
-)
-flags.DEFINE_string("unit", "km", "Distance unit (km or mi)")
-flags.DEFINE_string("info", None, "Show info of a given city.")
-flags.DEFINE_string(
-    "compare", None, "Show info of a list of cities, separate by comma."
-)
+import sys
 
 
 def main(argv):
-    del argv  # Unused.
+    datafile_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        os.pardir,
+        "data/worldcities.csv",
+    )
+    if not os.path.exists(datafile_path):
+        raise FileExistsError(f"File '{datafile_path}' does not exists")
 
-    if not os.path.exists(FLAGS.data_path):
-        raise FileExistsError(f"File '{FLAGS.data_path}' does not exists")
+    query_engine = GQueryEngine(datafile_path)
 
-    query_engine = GQueryEngine(FLAGS.data_path)
-
-    if FLAGS.info is not None:
-        city_info = query_engine.retrieve(FLAGS.info)
-        if city_info is not None:
-            print(city_info)
-    elif FLAGS.compare is not None:
-        city_names = [s.strip() for s in str(FLAGS.compare).split(",")]
-        for city in city_names:
-            city_info = query_engine.retrieve(city)
+    match argv[1:]:
+        case ("info", *city):
+            city_name = " ".join(city)
+            city_info = query_engine.retrieve(city_name)
             if city_info is not None:
                 print(city_info)
-    elif FLAGS.distance is not None:
-        city_names = [s.strip() for s in str(FLAGS.distance).split(",")]
-        if len(city_names) != 2:
-            print("Must specify two cities.")
-            return
+        case ("compare", *city_names):
+            for city in city_names:
+                city_info = query_engine.retrieve(city)
+                if city_info is not None:
+                    print(city_info)
+        case ("distance", city1, city2, *extra_arg):
+            city1_data = query_engine.retrieve(city1)
+            city2_data = query_engine.retrieve(city2)
+            if (city1_data is None) or (city2_data is None):
+                return
 
-        city1_data = query_engine.retrieve(city_names[0])
-        city2_data = query_engine.retrieve(city_names[1])
+            use_mile = (len(extra_arg) > 0) and (extra_arg[0] == "--unit=mi")
 
-        if (city1_data is None) or (city2_data is None):
-            return
-
-        use_mile = FLAGS.unit in ("mi", "mile")
-
-        distance = coord_distance(
-            city1_data["lat"],
-            city2_data["lat"],
-            city1_data["lng"],
-            city2_data["lng"],
-            use_mile,
-        )
-        print(
-            f"Distance between {city1_data['city']} and {city2_data['city']}: {distance:.1f} "
-            + ("mi" if use_mile else "km")
-        )
+            distance = coord_distance(
+                city1_data.lat,
+                city2_data.lat,
+                city1_data.lng,
+                city2_data.lng,
+                use_mile,
+            )
+            print(
+                f"Distance between {city1_data.name} and "
+                f"{city2_data.name}: {distance:.1f} "
+                + ("mi" if use_mile else "km")
+            ) 
+        case _:
+            raise ValueError("Unrecognized arguments")
 
 
 if __name__ == "__main__":
-    app.run(main)
+    main(sys.argv)

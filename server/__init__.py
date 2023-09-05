@@ -7,7 +7,6 @@ from flask import (
     request,
     url_for,
 )
-from gquery_lib import GQueryEngine, CityInfo
 from . import db
 import os
 
