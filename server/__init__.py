@@ -8,6 +8,7 @@ from flask import (
     url_for,
 )
 from . import db
+import gquery_lib
 import os
 
 
@@ -76,9 +77,16 @@ def create_app(test_config=None):
                     flash(f'City "{city_name}" is not found.')
                     return redirect(url_for("compare"))
 
+            distance, unit = gquery_lib.compute_city_distance(
+                cities_and_info[0][1], cities_and_info[1][1], unit="km"
+            )
+
+            dist_display = f"{distance:.1f} {unit}"
+
             return render_template(
                 "show_comparison.html",
                 cities_info=[item[1] for item in cities_and_info],
+                dist_display = dist_display
             )
 
         return render_template("compare.html")

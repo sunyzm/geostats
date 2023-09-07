@@ -20,7 +20,7 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
     # Radius of earth.
     r = 3958.8 if use_mile else 6371
 
-    return c * r
+    return c * r, "mi" if use_mile else "km"
 
 
 def decimal_to_degree(val: float, is_lat: bool):
@@ -74,6 +74,16 @@ class CityInfo:
             f"- Population: {self.population:,}"
             # f"\n- Index: {self.index}"
         )
+
+
+def compute_city_distance(city1: CityInfo, city2: CityInfo, unit="km"):
+    return coord_distance(
+        city1.lat,
+        city2.lat,
+        city1.lng,
+        city2.lng,
+        unit in {"mi" , "mile"},
+    )
 
 
 class GQueryEngine:
