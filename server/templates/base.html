@@ -20,8 +20,8 @@
     <main>
       {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>
-      {% endfor %} 
-      {% block content %}{% endblock %}
+      {% endfor %}
+      <section class="content">{% block content %}{% endblock %}</section>
     </main>
   </body>
 </html>
