@@ -29,9 +29,18 @@ def main(argv):
             city1_data = query_engine.retrieve(city1)
             city2_data = query_engine.retrieve(city2)
             if (city1_data is None) or (city2_data is None):
-                return
+                exit(1)
 
-            use_mile = (len(extra_arg) > 0) and (extra_arg[0] == "--unit=mi")
+            if len(extra_arg) > 0 and extra_arg[0].startswith("--unit="):
+                unit = extra_arg[0].split(sep="=", maxsplit=1)[1].lower()
+                match unit:
+                    case "mi" | "mile":
+                        use_mile = True
+                    case "km" | "kilometer":
+                        use_mile = False
+                    case _:
+                        print(f"Unrecognized unit {unit}")
+                        exit(1)
 
             distance = coord_distance(
                 city1_data.lat,
@@ -44,9 +53,10 @@ def main(argv):
                 f"Distance between {city1_data.name} and "
                 f"{city2_data.name}: {distance:.1f} "
                 + ("mi" if use_mile else "km")
-            ) 
+            )
         case _:
-            raise ValueError("Unrecognized arguments")
+            print("Unrecognized arguments")
+            exit(1)
 
 
 if __name__ == "__main__":
