@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h2>{% block title %}Welcome{% endblock %}</h2>
-{% endblock %}
+{% block title %}Welcome{% endblock %}
 
 {% block content %}
 <form method="post">
-  <input type="text" name="city1" placeholder="City name"
+  <input type="text" name="city1" placeholder="Type city name"
          value="{{ request.form['city1'] }}"></input>
   <button type="submit">Search</button>      
 </form>

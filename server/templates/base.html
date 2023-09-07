@@ -17,11 +17,11 @@
         <li><a href="{{ url_for('compare') }}">Compare</a></li>
       </ul>
     </nav>
-    <section class="content">
-      <header>{% block header %}{% endblock %}</header>
+    <main>
       {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>
-      <main>{% endfor %} {% block content %}{% endblock %}</main>
-    </section>
+      {% endfor %} 
+      {% block content %}{% endblock %}
+    </main>
   </body>
 </html>
