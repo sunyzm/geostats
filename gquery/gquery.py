@@ -1,4 +1,4 @@
-from gquery_lib import GQueryEngine, coord_distance
+from gquery_lib import GQueryEngine, compute_city_distance
 import os
 import sys
 
@@ -31,28 +31,22 @@ def main(argv):
             if (city1_data is None) or (city2_data is None):
                 exit(1)
 
+            unit_symbol = "km"
             if len(extra_arg) > 0 and extra_arg[0].startswith("--unit="):
                 unit = extra_arg[0].split(sep="=", maxsplit=1)[1].lower()
                 match unit:
                     case "mi" | "mile":
-                        use_mile = True
+                        unit_symbol = "mi"
                     case "km" | "kilometer":
-                        use_mile = False
+                        unit_symbol = "km"
                     case _:
                         print(f"Unrecognized unit {unit}")
                         exit(1)
 
-            distance = coord_distance(
-                city1_data.lat,
-                city2_data.lat,
-                city1_data.lng,
-                city2_data.lng,
-                use_mile,
-            )
+            distance, _ = compute_city_distance(city1_data, city2_data, unit_symbol)
             print(
                 f"Distance between {city1_data.name} and "
-                f"{city2_data.name}: {distance:.1f} "
-                + ("mi" if use_mile else "km")
+                f"{city2_data.name}: {distance:.1f} {unit_symbol}"                
             )
         case _:
             print("Unrecognized arguments")

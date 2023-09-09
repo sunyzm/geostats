@@ -64,8 +64,6 @@ class CityInfo:
         )
 
     def __str__(self):
-        lat = self.lat
-        lng = self.lng
         return (
             f"{self.name}\n"
             f"- Coordinates: {self.coord}\n"
