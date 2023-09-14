@@ -30,23 +30,7 @@ def decimal_to_degree(val: float, is_lat: bool):
     direction = (
         ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
     )
-    return f"{degree}{chr(176)} {round(minute*60.0)}' {direction}"
-
-
-def print_city(city_data):
-    print(f"[{city_data['city']}]")
-    # print(f"- Latitude: {city_data['lat']:.2f}")
-    # print(f"- Longtitude: {city_data['lng']:.2f}")
-    lat = city_data["lat"]
-    lng = city_data["lng"]
-    print(
-        f"- Coordinates: {decimal_to_degree(lat, is_lat=True)}, "
-        f"{decimal_to_degree(lng, is_lat=False)}"
-    )
-    print(f"- Country: {city_data['country']}")
-    print(f"- Administration: {city_data['admin_name']}")
-    print(f"- Population: {int(city_data['population']):,}")
-    print(f"- Index: {city_data['index']}")
+    return f"{degree}{chr(176)} {round(minute*60.0)}' {direction
 
 
 class CityInfo:
@@ -80,7 +64,7 @@ def compute_city_distance(city1: CityInfo, city2: CityInfo, unit="km"):
         city2.lat,
         city1.lng,
         city2.lng,
-        unit in {"mi" , "mile"},
+        unit in {"mi", "mile"},
     )
 
 

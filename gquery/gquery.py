@@ -32,21 +32,24 @@ def main(argv):
                 exit(1)
 
             unit_symbol = "km"
-            if len(extra_arg) > 0 and extra_arg[0].startswith("--unit="):
-                unit = extra_arg[0].split(sep="=", maxsplit=1)[1].lower()
-                match unit:
-                    case "mi" | "mile":
-                        unit_symbol = "mi"
-                    case "km" | "kilometer":
-                        unit_symbol = "km"
-                    case _:
-                        print(f"Unrecognized unit {unit}")
-                        exit(1)
+            for arg in extra_arg:
+                if arg.startswith("--unit="):
+                    unit = arg.split(sep="=", maxsplit=1)[1].lower()
+                    match unit:
+                        case "mi" | "mile":
+                            unit_symbol = "mi"
+                        case "km" | "kilometer":
+                            unit_symbol = "km"
+                        case _:
+                            print(f"Unrecognized unit {unit}")
+                            exit(1)
 
-            distance, _ = compute_city_distance(city1_data, city2_data, unit_symbol)
+            distance, _ = compute_city_distance(
+                city1_data, city2_data, unit_symbol
+            )
             print(
                 f"Distance between {city1_data.name} and "
-                f"{city2_data.name}: {distance:.1f} {unit_symbol}"                
+                f"{city2_data.name}: {distance:.1f} {unit_symbol}"
             )
         case _:
             print("Unrecognized arguments")
