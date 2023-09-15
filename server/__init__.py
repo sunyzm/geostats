@@ -42,7 +42,7 @@ def create_app(test_config=None):
         if request.method == "POST":
             query_engine = db.get_query_engine()
 
-            city_name = request.form["city1"]
+            city_name = request.form["city1"].strip()
             if not city_name:
                 flash("Input is empty.")
                 return redirect(url_for("index"))
@@ -63,30 +63,32 @@ def create_app(test_config=None):
         if request.method == "POST":
             query_engine = db.get_query_engine()
 
-            city1, city2 = request.form["city1"], request.form["city2"]
-            if (not city1) or (not city2):
-                flash("Input is empty.")
-                return redirect(url_for("compare"))
+            cities = [
+                city.strip()
+                for city in [request.form["city1"], request.form["city2"]]
+            ]
+            for city in cities:
+                if not city:
+                    flash("Input is empty.")
+                    return redirect(url_for("compare"))
 
             cities_and_info = [
-                (city1, query_engine.retrieve(city1)),
-                (city2, query_engine.retrieve(city2)),
+                (city, query_engine.retrieve(city)) for city in cities
             ]
-            for city_name, info in cities_and_info:
+            for city, info in cities_and_info:
                 if not info:
-                    flash(f'City "{city_name}" is not found.')
+                    flash(f'City "{city}" is not found.')
                     return redirect(url_for("compare"))
 
             distance, unit = gquery_lib.compute_city_distance(
                 cities_and_info[0][1], cities_and_info[1][1], unit="km"
             )
-
             dist_display = f"{distance:.1f} {unit}"
 
             return render_template(
                 "show_comparison.html",
-                cities_info=[item[1] for item in cities_and_info],
-                dist_display = dist_display
+                cities_info=[info for (_, info) in cities_and_info],
+                dist_display=dist_display,
             )
 
         return render_template("compare.html")
