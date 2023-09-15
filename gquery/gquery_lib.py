@@ -3,7 +3,7 @@ import os
 from math import radians, cos, sin, asin, sqrt, floor
 
 
-def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
+def coord_distance(lat1, lat2, lon1, lon2, use_mile=False) -> (float, str):
     # Convert from degrees to radians.
     lon1 = radians(lon1)
     lon2 = radians(lon2)
@@ -23,14 +23,14 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False):
     return c * r, "mi" if use_mile else "km"
 
 
-def decimal_to_degree(val: float, is_lat: bool):
+def decimal_to_degree(val: float, is_lat: bool) -> str:
     abs_val = abs(val)
     degree = floor(abs_val)
     minute = abs_val - degree
     direction = (
         ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
     )
-    return f"{degree}{chr(176)} {round(minute*60.0)}' {direction
+    return f"{degree}{chr(176)} {round(minute*60.0)}' {direction}"
 
 
 class CityInfo:
@@ -38,6 +38,7 @@ class CityInfo:
         self.index = city_data["index"]
         self.name = city_data["city"]
         self.population = int(city_data["population"])
+        self.population_display = f"{self.population:,}"
         self.country = city_data["country"]
         self.admin = city_data["admin_name"]
         self.lat = city_data["lat"]
@@ -58,7 +59,9 @@ class CityInfo:
         )
 
 
-def compute_city_distance(city1: CityInfo, city2: CityInfo, unit="km"):
+def compute_city_distance(
+    city1: CityInfo, city2: CityInfo, unit="km"
+) -> (float, str):
     return coord_distance(
         city1.lat,
         city2.lat,
