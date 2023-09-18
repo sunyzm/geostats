@@ -1,4 +1,4 @@
-from gquery_lib import GQueryEngine, compute_city_distance
+import gquery_lib
 import os
 import sys
 
@@ -12,7 +12,7 @@ def main(argv):
     if not os.path.exists(datafile_path):
         raise FileExistsError(f"File '{datafile_path}' does not exists")
 
-    query_engine = GQueryEngine(datafile_path)
+    query_engine = gquery_lib.GQueryEngine(datafile_path)
 
     match argv[1:]:
         case ("info", *city):
@@ -44,8 +44,8 @@ def main(argv):
                             print(f"Unrecognized unit {unit}")
                             exit(1)
 
-            distance, _ = compute_city_distance(
-                city1_data, city2_data, unit_symbol
+            distance, unit_symbol = gquery_lib.compute_coord_distance(
+                city1_data.coord, city2_data.coord, unit_symbol
             )
             print(
                 f"Distance between {city1_data.name} and "

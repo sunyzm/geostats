@@ -1,6 +1,29 @@
 import pandas as pd
 import os
+from dataclasses import dataclass
 from math import radians, cos, sin, asin, sqrt, floor
+
+
+def decimal_to_degree(val: float, is_lat: bool) -> str:
+    abs_val = abs(val)
+    degree = floor(abs_val)
+    minute = abs_val - degree
+    direction = (
+        ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
+    )
+    return f"{degree}{chr(176)} {round(minute*60.0)}' {direction}"
+
+
+@dataclass(frozen=True)
+class Coordinate:
+    lat: float
+    lng: float
+
+    def __str__(self):
+        return (
+            f"{decimal_to_degree(self.lat, is_lat=True)}, "
+            f"{decimal_to_degree(self.lng, is_lat=False)}"
+        )
 
 
 def coord_distance(lat1, lat2, lon1, lon2, use_mile=False) -> (float, str):
@@ -23,14 +46,16 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False) -> (float, str):
     return c * r, "mi" if use_mile else "km"
 
 
-def decimal_to_degree(val: float, is_lat: bool) -> str:
-    abs_val = abs(val)
-    degree = floor(abs_val)
-    minute = abs_val - degree
-    direction = (
-        ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
+def compute_coord_distance(
+    coord1: Coordinate, coord2: Coordinate, unit: str = "km"
+) -> (float, str):
+    return coord_distance(
+        coord1.lat,
+        coord2.lat,
+        coord1.lng,
+        coord2.lng,
+        unit in {"mi", "mile"},
     )
-    return f"{degree}{chr(176)} {round(minute*60.0)}' {direction}"
 
 
 class CityInfo:
@@ -41,12 +66,7 @@ class CityInfo:
         self.population_display = f"{self.population:,}"
         self.country = city_data["country"]
         self.admin = city_data["admin_name"]
-        self.lat = city_data["lat"]
-        self.lng = city_data["lng"]
-        self.coord = (
-            f"{decimal_to_degree(self.lat, is_lat=True)}, "
-            f"{decimal_to_degree(self.lng, is_lat=False)}"
-        )
+        self.coord = Coordinate(city_data["lat"], city_data["lng"])
 
     def __str__(self):
         return (
@@ -57,18 +77,6 @@ class CityInfo:
             f"- Population: {self.population:,}"
             # f"\n- Index: {self.index}"
         )
-
-
-def compute_city_distance(
-    city1: CityInfo, city2: CityInfo, unit="km"
-) -> (float, str):
-    return coord_distance(
-        city1.lat,
-        city2.lat,
-        city1.lng,
-        city2.lng,
-        unit in {"mi", "mile"},
-    )
 
 
 class GQueryEngine:

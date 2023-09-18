@@ -80,8 +80,10 @@ def create_app(test_config=None):
                     flash(f'City "{city}" is not found.')
                     return redirect(url_for("compare"))
 
-            distance, unit = gquery_lib.compute_city_distance(
-                cities_and_info[0][1], cities_and_info[1][1], unit="km"
+            distance, unit = gquery_lib.compute_coord_distance(
+                cities_and_info[0][1].coord,
+                cities_and_info[1][1].coord,
+                unit="km",
             )
             dist_display = f"{distance:.1f} {unit}"
 
