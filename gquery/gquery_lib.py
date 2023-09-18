@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from dataclasses import dataclass
+from enum import Enum
 from math import radians, cos, sin, asin, sqrt, floor
 
 
@@ -26,7 +27,12 @@ class Coordinate:
         )
 
 
-def coord_distance(lat1, lat2, lon1, lon2, use_mile=False) -> (float, str):
+class LengthUnit(Enum):
+    KM = 1
+    MI = 2
+
+
+def coord_distance(lat1, lat2, lon1, lon2, unit: LengthUnit) -> (float, str):
     # Convert from degrees to radians.
     lon1 = radians(lon1)
     lon2 = radians(lon2)
@@ -40,6 +46,7 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False) -> (float, str):
 
     c = 2 * asin(sqrt(a))
 
+    use_mile = unit == LengthUnit.MI
     # Radius of earth.
     r = 3958.8 if use_mile else 6371
 
@@ -47,14 +54,14 @@ def coord_distance(lat1, lat2, lon1, lon2, use_mile=False) -> (float, str):
 
 
 def compute_coord_distance(
-    coord1: Coordinate, coord2: Coordinate, unit: str = "km"
+    coord1: Coordinate, coord2: Coordinate, unit: LengthUnit = LengthUnit.KM
 ) -> (float, str):
     return coord_distance(
         coord1.lat,
         coord2.lat,
         coord1.lng,
         coord2.lng,
-        unit in {"mi", "mile"},
+        unit,
     )
 
 

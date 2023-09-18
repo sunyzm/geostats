@@ -31,21 +31,21 @@ def main(argv):
             if (city1_data is None) or (city2_data is None):
                 exit(1)
 
-            unit_symbol = "km"
+            unit = gquery_lib.LengthUnit.KM
             for arg in extra_arg:
                 if arg.startswith("--unit="):
-                    unit = arg.split(sep="=", maxsplit=1)[1].lower()
-                    match unit:
+                    unit_str = arg.split(sep="=", maxsplit=1)[1].lower()
+                    match unit_str:
                         case "mi" | "mile":
-                            unit_symbol = "mi"
+                            unit = gquery_lib.LengthUnit.MI
                         case "km" | "kilometer":
-                            unit_symbol = "km"
+                            unit = gquery_lib.LengthUnit.KM
                         case _:
                             print(f"Unrecognized unit {unit}")
                             exit(1)
 
             distance, unit_symbol = gquery_lib.compute_coord_distance(
-                city1_data.coord, city2_data.coord, unit_symbol
+                city1_data.coord, city2_data.coord, unit
             )
             print(
                 f"Distance between {city1_data.name} and "
