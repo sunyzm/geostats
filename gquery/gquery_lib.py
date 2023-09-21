@@ -65,7 +65,16 @@ def compute_coord_distance(
     )
 
 
+@dataclass
 class CityInfo:
+    index: int
+    name: str
+    population: float
+    population_display: str
+    country: str
+    admin: str
+    coord: Coordinate
+
     def __init__(self, city_data):
         self.index = city_data["index"]
         self.name = city_data["city"]
