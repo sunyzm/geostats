@@ -15,21 +15,18 @@ def main(argv):
     query_engine = gquery_lib.GQueryEngine(datafile_path)
 
     match argv[1:]:
-        case ("info", *city):
-            city_name = " ".join(city)
-            city_info = query_engine.retrieve(city_name)
-            if city_info is not None:
-                print(city_info)
-        case ("compare", *city_names):
+        case ("info", *city_names):
             for city in city_names:
-                city_info = query_engine.retrieve(city)
-                if city_info is not None:
-                    print(city_info)
+                matched_cities = query_engine.retrieve(city)
+                if len(matched_cities) > 0:
+                    print(matched_cities[0])
         case ("distance", city1, city2, *extra_arg):
-            city1_data = query_engine.retrieve(city1)
-            city2_data = query_engine.retrieve(city2)
-            if (city1_data is None) or (city2_data is None):
+            matched_cities_1 = query_engine.retrieve(city1, max_num=1)
+            matched_cities_2 = query_engine.retrieve(city2, max_num=1)
+            if len(matched_cities_1) == 0 or len(matched_cities_2) == 0:
                 exit(1)
+
+            city1, city2 = matched_cities_1[0], matched_cities_2[0]
 
             unit = gquery_lib.LengthUnit.KM
             for arg in extra_arg:
@@ -45,11 +42,11 @@ def main(argv):
                             exit(1)
 
             distance, unit_symbol = gquery_lib.compute_coord_distance(
-                city1_data.coord, city2_data.coord, unit
+                city1.coord, city2.coord, unit
             )
             print(
-                f"Distance between {city1_data.name} and "
-                f"{city2_data.name}: {distance:.1f} {unit_symbol}"
+                f"Distance between {city1.name} and "
+                f"{city2.name}: {distance:.1f} {unit_symbol}"
             )
         case _:
             print("Unrecognized arguments")

@@ -47,13 +47,13 @@ def create_app(test_config=None):
                 flash("Input is empty.")
                 return redirect(url_for("index"))
 
-            city_data = query_engine.retrieve(city_name)
-            if not city_data:
+            cities = query_engine.retrieve(city_name)
+            if len(cities) == 0:
                 flash(f'City "{city_name}" is not found.')
                 return redirect(url_for("index"))
             else:
                 return redirect(
-                    url_for("show_city_info", city_id=city_data.index)
+                    url_for("show_city_info", city_id=cities[0].index)
                 )
 
         return render_template("index.html")
@@ -63,33 +63,34 @@ def create_app(test_config=None):
         if request.method == "POST":
             query_engine = db.get_query_engine()
 
-            cities = [
+            city_names = [
                 city.strip()
                 for city in [request.form["city1"], request.form["city2"]]
             ]
-            for city in cities:
+            for city in city_names:
                 if not city:
                     flash("Input is empty.")
                     return redirect(url_for("compare"))
 
             cities_and_info = [
-                (city, query_engine.retrieve(city)) for city in cities
+                (city, query_engine.retrieve(city, max_num=1))
+                for city in city_names
             ]
             for city, info in cities_and_info:
-                if not info:
+                if len(info) == 0:
                     flash(f'City "{city}" is not found.')
                     return redirect(url_for("compare"))
 
             distance, unit = gquery_lib.compute_coord_distance(
-                cities_and_info[0][1].coord,
-                cities_and_info[1][1].coord,
+                cities_and_info[0][1][0].coord,
+                cities_and_info[1][1][0].coord,
                 unit="km",
             )
             dist_display = f"{distance:.1f} {unit}"
 
             return render_template(
                 "show_comparison.html",
-                cities_info=[info for (_, info) in cities_and_info],
+                cities_info=[info[0] for (_, info) in cities_and_info],
                 dist_display=dist_display,
             )
 

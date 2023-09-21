@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from dataclasses import dataclass
 from enum import Enum
-from math import radians, cos, sin, asin, sqrt, floor
+from math import radians, cos, sin, asin, sqrt, floor, isnan
 
 
 def decimal_to_degree(val: float, is_lat: bool) -> str:
@@ -69,8 +69,12 @@ class CityInfo:
     def __init__(self, city_data):
         self.index = city_data["index"]
         self.name = city_data["city"]
-        self.population = int(city_data["population"])
-        self.population_display = f"{self.population:,}"
+        self.population = city_data["population"]
+        self.population_display = (
+            f"{round(self.population):,}"
+            if not isnan(self.population)
+            else "NA"
+        )
         self.country = city_data["country"]
         self.admin = city_data["admin_name"]
         self.coord = Coordinate(city_data["lat"], city_data["lng"])
@@ -81,7 +85,7 @@ class CityInfo:
             f"- Coordinates: {self.coord}\n"
             f"- Country: {self.country}\n"
             f"- Administration: {self.admin}\n"
-            f"- Population: {self.population:,}"
+            f"- Population: {self.population_display}"
             # f"\n- Index: {self.index}"
         )
 
@@ -113,17 +117,19 @@ class GQueryEngine:
         city_data = matched_rows.iloc[0].to_dict()
         return CityInfo(city_data)
 
-    def retrieve(self, city_name: str) -> CityInfo:
+    def retrieve(self, city_name: str, max_num=-1) -> list[CityInfo]:
         df = self.__worldcity_df
         matched_rows = df[df["city_normalized"] == city_name.lower()]
         if matched_rows.empty:
             print(f"ERROR: {city_name} is not found")
-            return None
+            return []
 
-        city_data = matched_rows.iloc[0].to_dict()
-        return CityInfo(city_data)
+        matched_cities = [
+            CityInfo(row.to_dict()) for _, row in matched_rows.iterrows()
+        ]
+        return matched_cities[:max_num] if max_num > 0 else matched_cities
 
     def print(self, city_name: str):
-        city_info = self.retrieve(city_name)
-        if city_info is not None:
-            print(city_info)
+        matched_cities = self.retrieve(city_name)
+        if len(matched_cities) > 0:
+            print(matched_cities[0])
