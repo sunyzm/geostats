@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
 from math import radians, cos, sin, asin, sqrt, floor, isnan
-from typing import Tuple
 import os
 import pandas as pd
 
@@ -35,7 +34,7 @@ class LengthUnit(Enum):
 
 def coord_distance(
     lat1, lat2, lon1, lon2, unit: LengthUnit
-) -> Tuple[float, str]:
+) -> tuple[float, str]:
     # Convert from degrees to radians.
     lon1 = radians(lon1)
     lon2 = radians(lon2)
@@ -58,7 +57,7 @@ def coord_distance(
 
 def compute_coord_distance(
     coord1: Coordinate, coord2: Coordinate, unit: LengthUnit = LengthUnit.KM
-) -> Tuple[float, str]:
+) -> tuple[float, str]:
     return coord_distance(
         coord1.lat,
         coord2.lat,
