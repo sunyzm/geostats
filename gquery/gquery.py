@@ -1,5 +1,6 @@
 import gquery_lib
 import os
+import pyinputplus as pyip
 import sys
 
 
@@ -16,10 +17,24 @@ def main(argv):
 
     match argv[1:]:
         case ("info", *city_names):
-            for city in city_names:
-                matched_cities = query_engine.retrieve(city)
-                if len(matched_cities) > 0:
+            for city_name in city_names:
+                matched_cities = query_engine.retrieve(city_name)
+                if len(matched_cities) == 1:
                     print(matched_cities[0])
+                elif len(matched_cities) > 1:
+                    print("There are multiple matches:")
+                    for i in range(len(matched_cities)):
+                        city_info = matched_cities[i]
+                        print(
+                            f"{i+1}. {city_info.name} ({city_info.country}, {city_info.admin})"
+                        )
+                    selected = pyip.inputInt(
+                        f"Please select a city [1-{len(matched_cities)}]:",
+                        default=1,
+                        min=1,
+                        max=len(matched_cities) + 1,
+                    )
+                    print(matched_cities[selected - 1])
         case ("distance", city1, city2, *extra_arg):
             matched_cities_1 = query_engine.retrieve(city1, max_num=1)
             matched_cities_2 = query_engine.retrieve(city2, max_num=1)
