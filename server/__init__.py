@@ -88,7 +88,7 @@ def create_app(test_config=None):
             distance, unit = gquery_lib.compute_coord_distance(
                 cities_and_info[0][1][0].coord,
                 cities_and_info[1][1][0].coord,
-                unit="km",
+                unit=gquery_lib.LengthUnit.KM,
             )
             dist_display = f"{distance:.1f} {unit}"
 

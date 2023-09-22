@@ -4,6 +4,31 @@ import pyinputplus as pyip
 import sys
 
 
+def find_city(
+    query_engine: gquery_lib.GQueryEngine, city_name: str
+) -> gquery_lib.CityInfo | None:
+    matched_cities = query_engine.retrieve(city_name)
+    if len(matched_cities) == 0:
+        print("No matched city is found.")
+        return None
+    elif len(matched_cities) == 1:
+        return matched_cities[0]
+    else:
+        print("There are multiple matches:")
+        for i in range(len(matched_cities)):
+            city_info = matched_cities[i]
+            print(
+                f"{i+1}. {city_info.name} ({city_info.country}, {city_info.admin})"
+            )
+        selected = pyip.inputInt(
+            f"Please select a city [1-{len(matched_cities)}]:",
+            default=1,
+            min=1,
+            max=len(matched_cities) + 1,
+        )
+        return matched_cities[selected - 1]
+
+
 def main(argv):
     datafile_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
@@ -18,30 +43,15 @@ def main(argv):
     match argv[1:]:
         case ("info", *city_names):
             for city_name in city_names:
-                matched_cities = query_engine.retrieve(city_name)
-                if len(matched_cities) == 1:
-                    print(matched_cities[0])
-                elif len(matched_cities) > 1:
-                    print("There are multiple matches:")
-                    for i in range(len(matched_cities)):
-                        city_info = matched_cities[i]
-                        print(
-                            f"{i+1}. {city_info.name} ({city_info.country}, {city_info.admin})"
-                        )
-                    selected = pyip.inputInt(
-                        f"Please select a city [1-{len(matched_cities)}]:",
-                        default=1,
-                        min=1,
-                        max=len(matched_cities) + 1,
-                    )
-                    print(matched_cities[selected - 1])
+                if (
+                    matched_city := find_city(query_engine, city_name)
+                ) is not None:
+                    print(matched_city)
         case ("distance", city1, city2, *extra_arg):
-            matched_cities_1 = query_engine.retrieve(city1, max_num=1)
-            matched_cities_2 = query_engine.retrieve(city2, max_num=1)
-            if len(matched_cities_1) == 0 or len(matched_cities_2) == 0:
+            city_info_1 = find_city(query_engine, city1)
+            city_info_2 = find_city(query_engine, city2)
+            if city_info_1 is None or city_info_2 is None:
                 exit(1)
-
-            city1, city2 = matched_cities_1[0], matched_cities_2[0]
 
             unit = gquery_lib.LengthUnit.KM
             for arg in extra_arg:
@@ -57,11 +67,11 @@ def main(argv):
                             exit(1)
 
             distance, unit_symbol = gquery_lib.compute_coord_distance(
-                city1.coord, city2.coord, unit
+                city_info_1.coord, city_info_2.coord, unit
             )
             print(
-                f"Distance between {city1.name} and "
-                f"{city2.name}: {distance:.1f} {unit_symbol}"
+                f"Distance between {city_info_1.name} and "
+                f"{city_info_2.name}: {distance:.1f} {unit_symbol}"
             )
         case _:
             print("Unrecognized arguments")

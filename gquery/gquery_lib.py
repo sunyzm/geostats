@@ -132,7 +132,6 @@ class GQueryEngine:
         df = self.__worldcity_df
         matched_rows = df[df["city_normalized"] == city_name.lower()]
         if matched_rows.empty:
-            print(f"ERROR: {city_name} is not found")
             return []
 
         matched_cities = [
@@ -142,5 +141,7 @@ class GQueryEngine:
 
     def print(self, city_name: str):
         matched_cities = self.retrieve(city_name)
-        if len(matched_cities) > 0:
+        if len(matched_cities) == 0:
+            print(f"{city_name} is not found")
+        else:
             print(matched_cities[0])

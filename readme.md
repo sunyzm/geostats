@@ -26,7 +26,7 @@ $ pip install -r requirements.txt
 
 ```
 $ python gquery/gquery.py info "san francisco"
-$ python gquery/gquery.py compare "san francico" seattle "new york"
+$ python gquery/gquery.py info "san francico" seattle "new york"
 $ python gquery/gquery.py distance tokyo "hong kong"
 $ python gquery/gquery.py distance "new york" london --unit=mi
 ```
