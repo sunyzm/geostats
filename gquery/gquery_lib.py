@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from math import radians, cos, sin, asin, sqrt, floor, isnan
+from typing import Tuple
 import os
 import pandas as pd
 
@@ -32,7 +33,9 @@ class LengthUnit(Enum):
     MI = 2
 
 
-def coord_distance(lat1, lat2, lon1, lon2, unit: LengthUnit) -> (float, str):
+def coord_distance(
+    lat1, lat2, lon1, lon2, unit: LengthUnit
+) -> Tuple[float, str]:
     # Convert from degrees to radians.
     lon1 = radians(lon1)
     lon2 = radians(lon2)
@@ -55,7 +58,7 @@ def coord_distance(lat1, lat2, lon1, lon2, unit: LengthUnit) -> (float, str):
 
 def compute_coord_distance(
     coord1: Coordinate, coord2: Coordinate, unit: LengthUnit = LengthUnit.KM
-) -> (float, str):
+) -> Tuple[float, str]:
     return coord_distance(
         coord1.lat,
         coord2.lat,
@@ -116,7 +119,7 @@ class GQueryEngine:
         if debug_enabled:
             print("GQueryEngine has been initalized.")
 
-    def get(self, id: int) -> CityInfo:
+    def get(self, id: int) -> CityInfo | None:
         df = self.__worldcity_df
         matched_rows = df[df.index == id]
         if matched_rows.empty:
@@ -126,7 +129,7 @@ class GQueryEngine:
         city_data = matched_rows.iloc[0].to_dict()
         return CityInfo(city_data)
 
-    def retrieve(self, city_name: str, max_num=-1) -> list[CityInfo]:
+    def retrieve(self, city_name: str, max_num: int = -1) -> list[CityInfo]:
         df = self.__worldcity_df
         matched_rows = df[df["city_normalized"] == city_name.lower()]
         if matched_rows.empty:
