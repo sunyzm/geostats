@@ -3,6 +3,6 @@ from flask import current_app, g
 
 def get_query_engine() -> GQueryEngine:
     if "query_engine" not in g:
-        g.query_engine = GQueryEngine(current_app.config["DATAFILE"])
+        g.query_engine = GQueryEngine(current_app.config["CITIES_DATAFILE"])
 
     return g.query_engine

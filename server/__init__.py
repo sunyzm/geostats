@@ -18,10 +18,14 @@ def create_app(test_config=None):
 
     app.config.from_mapping(
         SECRET_KEY="dev",
-        DATAFILE=os.path.join(app.instance_path, "data/worldcities.csv"),
+        CITIES_DATAFILE=os.path.join(app.instance_path, "data/worldcities.csv"),
     )
 
-    app.logger.info("Datafile: %s", app.config["DATAFILE"])
+    city_datafile = app.config["CITIES_DATAFILE"]
+    if not os.path.exists(city_datafile):
+        raise FileExistsError(f"File '{city_datafile}' does not exists")
+
+    app.logger.info("Datafile for world cities: %s", city_datafile)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
