@@ -1,17 +1,15 @@
 from dataclasses import dataclass
 from enum import Enum
 from math import radians, cos, sin, asin, sqrt, floor, isnan
+from typing import Any, Mapping
 import os
 import pandas as pd
 
 
-def decimal_to_degree(val: float, is_lat: bool) -> str:
+def decimal_to_degree(val: float, direction: str) -> str:
     abs_val = abs(val)
     degree = floor(abs_val)
     minute = abs_val - degree
-    direction = (
-        ("N" if val >= 0 else "S") if is_lat else ("E" if val >= 0 else "W")
-    )
     return f"{degree}{chr(176)} {round(minute*60.0)}' {direction}"
 
 
@@ -22,8 +20,8 @@ class Coordinate:
 
     def __str__(self):
         return (
-            f"{decimal_to_degree(self.lat, is_lat=True)}, "
-            f"{decimal_to_degree(self.lng, is_lat=False)}"
+            f"{decimal_to_degree(self.lat, ('N' if self.lat >= 0 else 'S'))}, "
+            f"{decimal_to_degree(self.lng, ('E' if self.lng >= 0 else 'W'))}"
         )
 
 
@@ -77,7 +75,7 @@ class CityInfo:
     admin: str
     coord: Coordinate
 
-    def __init__(self, city_data):
+    def __init__(self, city_data: Mapping[str, Any]):
         self.index = city_data["index"]
         self.name = city_data["city"]
         self.population = city_data["population"]
@@ -102,8 +100,6 @@ class CityInfo:
 
 
 class GQueryEngine:
-    __worldcity_df = None
-
     def __init__(self, datafile_path, debug_enabled=False):
         if not os.path.exists(datafile_path):
             raise FileExistsError(f"File '{datafile_path}' does not exists")
