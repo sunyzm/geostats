@@ -1,13 +1,12 @@
-from gquery_lib import CityInfo, GQueryEngine
-import gquery_lib
+from coordinate import compute_coord_distance, LengthUnit
+from city import CityInfo
+from engine import GQueryEngine
 import os
 import pyinputplus as pyip
 import sys
 
 
-def find_city(
-    query_engine: GQueryEngine, city_name: str
-) -> CityInfo | None:
+def find_city(query_engine: GQueryEngine, city_name: str) -> CityInfo | None:
     matched_cities = query_engine.retrieve(city_name)
     if len(matched_cities) == 0:
         print("No matched city is found.")
@@ -54,20 +53,20 @@ def main(argv):
             if city_info_1 is None or city_info_2 is None:
                 exit(1)
 
-            unit = gquery_lib.LengthUnit.KM
+            unit = LengthUnit.KM
             for arg in extra_arg:
                 if arg.startswith("--unit="):
                     unit_str = arg.split(sep="=", maxsplit=1)[1].lower()
                     match unit_str:
                         case "mi" | "mile":
-                            unit = gquery_lib.LengthUnit.MI
+                            unit = LengthUnit.MI
                         case "km" | "kilometer":
-                            unit = gquery_lib.LengthUnit.KM
+                            unit = LengthUnit.KM
                         case _:
                             print(f"Unrecognized unit {unit}")
                             exit(1)
 
-            distance, unit_symbol = gquery_lib.compute_coord_distance(
+            distance, unit_symbol = compute_coord_distance(
                 city_info_1.coord, city_info_2.coord, unit
             )
             print(

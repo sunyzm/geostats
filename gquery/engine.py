@@ -1,4 +1,5 @@
 from city import CityInfo
+from coordinate import Coordinate
 import os
 import pandas as pd
 

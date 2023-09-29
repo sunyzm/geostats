@@ -8,7 +8,7 @@ from flask import (
     url_for,
 )
 from . import db
-import gquery_lib
+from gquery.coordinate import compute_coord_distance, LengthUnit
 import os
 
 
@@ -85,10 +85,10 @@ def create_app(test_config=None):
                     flash(f'City "{city}" is not found.')
                     return redirect(url_for("compare"))
 
-            distance, unit = gquery_lib.compute_coord_distance(
+            distance, unit = compute_coord_distance(
                 cities_and_info[0][1][0].coord,
                 cities_and_info[1][1][0].coord,
-                unit=gquery_lib.LengthUnit.KM,
+                unit=LengthUnit.KM,
             )
             dist_display = f"{distance:.1f} {unit}"
 
