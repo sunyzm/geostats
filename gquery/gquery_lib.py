@@ -135,7 +135,7 @@ class GQueryEngine:
         ]
         return matched_cities[:max_num] if max_num > 0 else matched_cities
 
-    def print(self, city_name: str):
+    def print(self, city_name: str) -> None:
         matched_cities = self.retrieve(city_name)
         if len(matched_cities) == 0:
             print(f"{city_name} is not found")

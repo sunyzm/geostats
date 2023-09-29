@@ -1,3 +1,4 @@
+from gquery_lib import CityInfo, GQueryEngine
 import gquery_lib
 import os
 import pyinputplus as pyip
@@ -5,8 +6,8 @@ import sys
 
 
 def find_city(
-    query_engine: gquery_lib.GQueryEngine, city_name: str
-) -> gquery_lib.CityInfo | None:
+    query_engine: GQueryEngine, city_name: str
+) -> CityInfo | None:
     matched_cities = query_engine.retrieve(city_name)
     if len(matched_cities) == 0:
         print("No matched city is found.")
@@ -38,7 +39,7 @@ def main(argv):
     if not os.path.exists(datafile_path):
         raise FileExistsError(f"File '{datafile_path}' does not exists")
 
-    query_engine = gquery_lib.GQueryEngine(datafile_path)
+    query_engine = GQueryEngine(datafile_path)
 
     match argv[1:]:
         case ("info", *city_names):
