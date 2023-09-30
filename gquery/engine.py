@@ -1,13 +1,16 @@
 from .city import CityInfo
-from .coordinate import Coordinate
 import os
 import pandas as pd
 
+CITIES_DATAFILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "data", "worldcities.csv"
+)
+
 
 class GQueryEngine:
-    def __init__(self, datafile_path, debug_enabled=False):
+    def __init__(self, datafile_path=CITIES_DATAFILE, debug_enabled=False):
         if not os.path.exists(datafile_path):
-            raise FileExistsError(f"File '{datafile_path}' does not exists")
+            raise FileExistsError(f"File {datafile_path} does not exists")
 
         df = pd.read_csv(datafile_path, header=0, engine="c")
         df = df.assign(index=df.index)

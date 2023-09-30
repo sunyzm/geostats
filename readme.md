@@ -12,7 +12,7 @@
 $ git clone https://github.com/sunyzm/geostats.git
 ```
 
-2.  Donwload the basic version of `worldcities.csv` from https://simplemaps.com/data/world-cities; copy the file to both `geostats/data/` and `geostats/instance/data/`
+2.  Copy `geostats/gquery/data/` to `geostats/instance/data/`
 3.  Add `geostats` to the **PYTHONPATH** environment variable
 4.  Setup Python venv:
 

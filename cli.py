@@ -1,7 +1,6 @@
 from gquery.coordinate import compute_coord_distance, LengthUnit
 from gquery.city import CityInfo
 from gquery.engine import GQueryEngine
-import os
 import pyinputplus as pyip
 import sys
 
@@ -30,15 +29,7 @@ def find_city(query_engine: GQueryEngine, city_name: str) -> CityInfo | None:
 
 
 def main(argv):
-    datafile_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        os.curdir,
-        "data/worldcities.csv",
-    )
-    if not os.path.exists(datafile_path):
-        raise FileExistsError(f"File '{datafile_path}' does not exists")
-
-    query_engine = GQueryEngine(datafile_path)
+    query_engine = GQueryEngine()
 
     match argv[1:]:
         case ("info", *city_names):
