@@ -12,9 +12,8 @@
 $ git clone https://github.com/sunyzm/geostats.git
 ```
 
-2.  Copy `geostats/gquery/data/` to `geostats/instance/data/`
-3.  Add `geostats` to the **PYTHONPATH** environment variable
-4.  Setup Python venv:
+2.  Add `geostats` to the **PYTHONPATH** environment variable
+3.  Setup Python venv:
 
 ```
 $ python3 -m venv .venv

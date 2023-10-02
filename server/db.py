@@ -4,6 +4,6 @@ from gquery.engine import GQueryEngine
 
 def get_query_engine() -> GQueryEngine:
     if "query_engine" not in g:
-        g.query_engine = GQueryEngine(current_app.config["CITIES_DATAFILE"])
+        g.query_engine = GQueryEngine()
 
     return g.query_engine

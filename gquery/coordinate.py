@@ -28,7 +28,7 @@ class LengthUnit(Enum):
 
 
 def coord_distance(
-    lat1, lat2, lon1, lon2, unit: LengthUnit
+    lat1, lat2, lon1, lon2, unit: LengthUnit = LengthUnit.KM
 ) -> tuple[float, str]:
     # Convert from degrees to radians.
     lon1 = radians(lon1)
