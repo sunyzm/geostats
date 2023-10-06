@@ -6,31 +6,37 @@
 
 ## Instructions
 
-1.  Download the source from Github:
+1. Download the source from Github:
 
-```
+```bash
 $ git clone https://github.com/sunyzm/geostats.git
 ```
 
-2.  Add `geostats` to the **PYTHONPATH** environment variable
-3.  Setup Python venv:
+2. Setup Python venv:
 
-```
+```bash
 $ python3 -m venv .venv
 $ source .venv/bin/activate
-$ pip install -r requirements.txt
 ```
 
-# Usage of CLI
-
-```
-$ python cli.py info "san francisco"
-$ python cli.py info "san francico" seattle "new york"
-$ python cli.py distance tokyo "hong kong"
-$ python cli.py distance "new york" london --unit=mi
+3. Install [`gquery`](https://github.com/sunyzm/gquery) package from GitHub:
+```bash
+$ pip install git+https://github.com/sunyzm/gquery.git
 ```
 
-# Usage of geostats server
+Alternative, you can download `gquery` package to a local directory, and install it in editable mode:
+```bash
+$ git clone https://github.com/sunyzm/gquery.git
+$ pip install -e PATH/TO/GQUERY/PACKAGE
+```
+
+4. Install `flask`:
+```bash
+$ pip install flask
+```
+
+# Usage
+Start the server:
 
 ```
 $ flask --app server run
